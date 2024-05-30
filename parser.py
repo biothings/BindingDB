@@ -1,5 +1,4 @@
 import csv
-import json
 import os
 from typing import Dict
 
@@ -30,7 +29,7 @@ BASE_COLS = [
     'Ligand InChI Key',
     'BindingDB MonomerID',
     'BindingDB Ligand Name',
-    'Target Name Assigned by Curator or DataSource',
+    'Target Name',
     'Target Source Organism According to Curator or DataSource',
     'Ki (nM)',
     'IC50 (nM)',
@@ -42,6 +41,7 @@ BASE_COLS = [
     'Temp (C)',
     'Curation/DataSource',
     'Article DOI',
+    'BindingDB Entry DOI',
     'PMID',
     'PubChem AID',
     'Patent Number',
@@ -109,7 +109,7 @@ COLUMN_DATA = {
       "uniprot_type": "all",
       "relation": False
     },
-    "Target Name Assigned by Curator or DataSource": {
+    "Target Name": {
       "location": "subject.name",
       "type": "split_colon",
       "uniprot_type": "all",
@@ -177,6 +177,12 @@ COLUMN_DATA = {
     },
     "Article DOI": {
       "location": "relation.article_doi",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "BindingDB Entry DOI": {
+      "location": "relation.bindingdb_entry_doi",
       "type": "string",
       "uniprot_type": "all",
       "relation": True
@@ -451,7 +457,8 @@ def read_csv(file: str, delim: str):
                         val = process_field(BASE_COLS[j], row[j])
                         set_field(base, BASE_COLS[j], val)
 
-                repeats = int(row[36])  # Number of Protein Chains in Target
+                # repeats = int(row[36])  # Number of Protein Chains in Target
+                repeats = int(row[36]) if row[36].isdigit() else 0
                 pos = 37
                 for j in range(repeats):
                     info_1 = special_copy(base)
@@ -531,7 +538,7 @@ def load_data(data_folder):
         yield docs[doc_id]
 
 
-# def main():
+# type: ignore # def main():
 #     from time import time
 
 #     cnt = 0
