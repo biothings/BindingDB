@@ -499,7 +499,7 @@ def merge(main: Dict[str, any], other: Dict[str, any]):
 def load_data(data_folder):
     docs = {}
     row_num = 0
-    for row in read_csv(os.path.join(data_folder, './BindingDB_All.tsv'), '\t'):
+    for row in read_csv(os.path.join(data_folder, './BindingDB_All_202405.tsv'), '\t'):
         # print(row['subject']['uniprot'])
         try:
             entry_name = row['subject']['uniprot']['id']
