@@ -68,7 +68,7 @@ BASE_COLS = [
 COLUMN_DATA stores where each column should go in the actual document. Each key corresponds to a column name in the csv. For each of these, four fields must be defined:
 
 - "location": defines the location of the column in the document, nested layers should be separated with a "."
-- "type": The type of data in the column. Supported types include "int", "string", "split_comma" (ie. "a,b,c"), and "split_semicolon" (ie "a;b;c")
+- "type": The type of data in the column. Supported types include "int", "string", "split_comma" (ie. "a,b,c"), "split_semicolon" (ie "a;b;c"), "split_chembl" (ie "CHEMBL1CHEMBL2CHEMBL3"), "split_colon" (ie "a::b::c")
 - "uniprot_type": This indicates whether the data is specifically applicable for "swissprot" or "trembl" documents, if it is applicable for both use "all"
 - "relation": This simply should store a boolean of whether this field is in the relation of the document, as the relation is treated a bit differently in terms of merging
 """
@@ -105,13 +105,13 @@ COLUMN_DATA = {
     },
     "BindingDB Ligand Name": {
       "location": "object.name",
-      "type": "string",
+      "type": "split_colon",
       "uniprot_type": "all",
       "relation": False
     },
     "Target Name Assigned by Curator or DataSource": {
       "location": "subject.name",
-      "type": "string",
+      "type": "split_colon",
       "uniprot_type": "all",
       "relation": False
     },
@@ -261,7 +261,7 @@ COLUMN_DATA = {
     },
     "ChEMBL ID of Ligand": {
       "location": "object.chembl",
-      "type": "string",
+      "type": "split_chembl",
       "uniprot_type": "all",
       "relation": False
     },
@@ -377,7 +377,7 @@ def append_field(doc: dict, key: str, value: any):
     for i in keys[:len(keys)-1]:
         key_ref = key_ref[i]
 
-    if COLUMN_DATA[key]['type'] == "split_comma" or COLUMN_DATA[key]['type'] == "split_semicolon":
+    if COLUMN_DATA[key]['type'] == "split_comma" or COLUMN_DATA[key]['type'] == "split_semicolon" or COLUMN_DATA[key]['type'] == "split_chembl" or COLUMN_DATA[key]['type'] == "split_colon":
         if isinstance(key_ref[keys[-1]][0], list) and value not in key_ref[keys[-1]]:
             key_ref[keys[-1]].append(value)
         if not isinstance(key_ref[keys[-1]][0], list) and value != key_ref[keys[-1]]:
@@ -427,6 +427,10 @@ def process_field(field_name: str, value: str):
         return value.split(',')
     if field_type == "split_semicolon":
         return value.split('; ')
+    if field_type == "split_colon":
+        return value.split('::')
+    if field_type == "split_chembl":
+        return ['CHEMBL' + x for x in value.split('CHEMBL') if x != '']
     return value
 
 
