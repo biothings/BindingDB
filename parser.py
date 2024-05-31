@@ -7,6 +7,8 @@ Fields of the Imported CSV:
 
 - The array BASE_COLS defines the first columns in each row with data mainly pertaining to the compound.
 - A sequence of columns is repeated which creates the data for each protein in the row, which is stored in REPEAT_SUBJECT_COLS.
+
+- Reference: https://www.bindingdb.org/bind/chemsearch/marvin/BindingDB-TSV-Format.pdf
 """
 REPEAT_SUBJECT_COLS = [
     'BindingDB Target Chain Sequence',
