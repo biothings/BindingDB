@@ -8,7 +8,7 @@
     "url" : "https://github.com/rjawesome"
   },
   "dumper" : {
-      "data_url" : ["https://www.bindingdb.org/bind/downloads/BindingDB_All_2022m5.tsv.zip"],
+      "data_url" : ["https://www.bindingdb.org/bind/downloads/BindingDB_All_202405_tsv.zip"],
       "uncompress" : true
   },
   "uploader" : {

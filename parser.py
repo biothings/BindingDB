@@ -1,5 +1,4 @@
 import csv
-import json
 import os
 from typing import Dict
 
@@ -8,6 +7,8 @@ Fields of the Imported CSV:
 
 - The array BASE_COLS defines the first columns in each row with data mainly pertaining to the compound.
 - A sequence of columns is repeated which creates the data for each protein in the row, which is stored in REPEAT_SUBJECT_COLS.
+
+- Reference: https://www.bindingdb.org/bind/chemsearch/marvin/BindingDB-TSV-Format.pdf
 """
 REPEAT_SUBJECT_COLS = [
     'BindingDB Target Chain Sequence',
@@ -30,7 +31,7 @@ BASE_COLS = [
     'Ligand InChI Key',
     'BindingDB MonomerID',
     'BindingDB Ligand Name',
-    'Target Name Assigned by Curator or DataSource',
+    'Target Name',
     'Target Source Organism According to Curator or DataSource',
     'Ki (nM)',
     'IC50 (nM)',
@@ -42,6 +43,7 @@ BASE_COLS = [
     'Temp (C)',
     'Curation/DataSource',
     'Article DOI',
+    'BindingDB Entry DOI',
     'PMID',
     'PubChem AID',
     'Patent Number',
@@ -109,7 +111,7 @@ COLUMN_DATA = {
       "uniprot_type": "all",
       "relation": False
     },
-    "Target Name Assigned by Curator or DataSource": {
+    "Target Name": {
       "location": "subject.name",
       "type": "split_colon",
       "uniprot_type": "all",
@@ -177,6 +179,12 @@ COLUMN_DATA = {
     },
     "Article DOI": {
       "location": "relation.article_doi",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "BindingDB Entry DOI": {
+      "location": "relation.bindingdb_entry_doi",
       "type": "string",
       "uniprot_type": "all",
       "relation": True
@@ -446,13 +454,13 @@ def read_csv(file: str, delim: str):
                 continue
             else:
                 base = {'object': {}, 'subject': {}, 'relation': {}}
-                for j in range(37):
+                for j in range(38):
                     if row[j] is not None and row[j] != '' and row[j] != 'NULL':
                         val = process_field(BASE_COLS[j], row[j])
                         set_field(base, BASE_COLS[j], val)
 
-                repeats = int(row[36])  # Number of Protein Chains in Target
-                pos = 37
+                repeats = int(row[37])  # Number of Protein Chains in Target
+                pos = 38
                 for j in range(repeats):
                     info_1 = special_copy(base)
                     info_2 = special_copy(base)
@@ -499,8 +507,7 @@ def merge(main: Dict[str, any], other: Dict[str, any]):
 def load_data(data_folder):
     docs = {}
     row_num = 0
-    for row in read_csv(os.path.join(data_folder, './BindingDB_All.tsv'), '\t'):
-        # print(row['subject']['uniprot'])
+    for row in read_csv(os.path.join(data_folder, './BindingDB_All_202405.tsv'), '\t'):
         try:
             entry_name = row['subject']['uniprot']['id']
             primary_id = row['subject']['uniprot']['accession']
@@ -531,7 +538,7 @@ def load_data(data_folder):
         yield docs[doc_id]
 
 
-# def main():
+# type: ignore # def main():
 #     from time import time
 
 #     cnt = 0
