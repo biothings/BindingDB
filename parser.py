@@ -452,14 +452,13 @@ def read_csv(file: str, delim: str):
                 continue
             else:
                 base = {'object': {}, 'subject': {}, 'relation': {}}
-                for j in range(37):
+                for j in range(38):
                     if row[j] is not None and row[j] != '' and row[j] != 'NULL':
                         val = process_field(BASE_COLS[j], row[j])
                         set_field(base, BASE_COLS[j], val)
 
-                # repeats = int(row[36])  # Number of Protein Chains in Target
-                repeats = int(row[36]) if row[36].isdigit() else 0
-                pos = 37
+                repeats = int(row[37])  # Number of Protein Chains in Target
+                pos = 38
                 for j in range(repeats):
                     info_1 = special_copy(base)
                     info_2 = special_copy(base)
@@ -507,7 +506,6 @@ def load_data(data_folder):
     docs = {}
     row_num = 0
     for row in read_csv(os.path.join(data_folder, './BindingDB_All_202405.tsv'), '\t'):
-        # print(row['subject']['uniprot'])
         try:
             entry_name = row['subject']['uniprot']['id']
             primary_id = row['subject']['uniprot']['accession']
