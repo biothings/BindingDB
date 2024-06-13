@@ -8,7 +8,7 @@
     "url" : "https://github.com/rjawesome"
   },
   "dumper" : {
-      "data_url" : ["https://www.bindingdb.org/bind/downloads/BindingDB_All_2022m5.tsv.zip", "https://www.bindingdb.org/bind/BDB-mySQL_All_202406_dmp.zip", "https://raw.githubusercontent.com/dumblob/mysql2sqlite/master/mysql2sqlite"],
+      "data_url" : ["https://www.bindingdb.org/bind/downloads/BindingDB_All_2022m5.tsv.zip", "https://www.bindingdb.org/bind/BDB-mySQL_All_202406_dmp.zip"],
       "uncompress" : true
   },
   "uploader" : {
