@@ -1,7 +1,7 @@
 import csv
-import json
 import os
 from typing import Dict
+from get_descriptions import get_descriptions
 
 """
 Fields of the Imported CSV:
@@ -497,6 +497,7 @@ def merge(main: Dict[str, any], other: Dict[str, any]):
 
 
 def load_data(data_folder):
+    descriptions = get_descriptions(data_folder)
     docs = {}
     row_num = 0
     for row in read_csv(os.path.join(data_folder, './BindingDB_All.tsv'), '\t'):
@@ -515,22 +516,27 @@ def load_data(data_folder):
 
         row['_id'] = f"{row['object']['monomer_id']}-{primary_id}"
         row['predicate'] = 'physically interacts with'
+        if str(row['relation']['bindingdb_set_id']) in descriptions:
+          row['relation']['description'] = descriptions[str(row['relation']['bindingdb_set_id'])]
+
 
         if row['_id'] in docs:
             merge(docs[row['_id']], row)
         else:
             docs[row['_id']] = arrayify(row)
 
-        # if row_num >= 1200000:
-        #   break
-        # if row_num % 50000 == 0:
-        #   print(row_num)
+        if row_num >= 50000:
+          break
+        if row_num % 50000 == 0:
+          print(row_num)
         row_num += 1
 
     for doc_id in docs:
         yield docs[doc_id]
 
 
+# type: ignore 
+# import json
 # def main():
 #     from time import time
 
