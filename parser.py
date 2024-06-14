@@ -525,10 +525,10 @@ def load_data(data_folder):
         else:
             docs[row['_id']] = arrayify(row)
 
-        if row_num >= 50000:
-          break
-        if row_num % 50000 == 0:
-          print(row_num)
+        # if row_num >= 50000:
+        #   break
+        # if row_num % 50000 == 0:
+        #   print(row_num)
         row_num += 1
 
     for doc_id in docs:
