@@ -2,6 +2,13 @@ import csv
 import os
 from typing import Dict
 
+
+"""
+Dumped file name
+"""
+DATA_FILE_NAME = 'BindingDB_All_202405.tsv'
+
+
 """
 Fields of the Imported CSV:
 
@@ -335,13 +342,13 @@ COLUMN_DATA = {
     },
     "UniProt (SwissProt) Secondary ID(s) of Target Chain": {
       "location": "subject.uniprot.secondary_accession",
-      "type": "split_comma",
+      "type": "split_space",
       "uniprot_type": "swissprot",
       "relation": False
     },
     "UniProt (SwissProt) Alternative ID(s) of Target Chain": {
       "location": "subject.uniprot.alternative_accession",
-      "type": "split_comma",
+      "type": "split_space",
       "uniprot_type": "swissprot",
       "relation": False
     },
@@ -365,13 +372,13 @@ COLUMN_DATA = {
     },
     "UniProt (TrEMBL) Secondary ID(s) of Target Chain": {
       "location": "subject.uniprot.secondary_accession",
-      "type": "split_comma",
+      "type": "split_space",
       "uniprot_type": "trembl",
       "relation": False
     },
     "UniProt (TrEMBL) Alternative ID(s) of Target Chain": {
       "location": "subject.uniprot.alternative_accession",
-      "type": "split_comma",
+      "type": "split_space",
       "uniprot_type": "trembl",
       "relation": False
     }
@@ -431,6 +438,8 @@ def process_field(field_name: str, value: str):
     field_type = COLUMN_DATA[field_name]['type']
     if field_type == "int":
         return int(value)
+    if field_type == "split_space":
+        return value.split(' ')
     if field_type == "split_comma":
         return value.split(',')
     if field_type == "split_semicolon":
@@ -507,7 +516,7 @@ def merge(main: Dict[str, any], other: Dict[str, any]):
 def load_data(data_folder):
     docs = {}
     row_num = 0
-    for row in read_csv(os.path.join(data_folder, './BindingDB_All_202405.tsv'), '\t'):
+    for row in read_csv(os.path.join(data_folder, './' + DATA_FILE_NAME), '\t'):
         try:
             entry_name = row['subject']['uniprot']['id']
             primary_id = row['subject']['uniprot']['accession']
